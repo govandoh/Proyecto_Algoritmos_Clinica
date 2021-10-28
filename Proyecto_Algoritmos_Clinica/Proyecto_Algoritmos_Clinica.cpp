@@ -2,6 +2,11 @@
 #include <iostream>
 #include <stdio.h>
 #include <windows.h>
+#include <fstream>
+#include <string.h>
+#include <string>
+#include <stdio.h>
+#include <cstring>    
 
 using namespace std;
 
@@ -10,7 +15,7 @@ int opcion;
 class Proyecto {
 public:
 	void crearFichero(FILE* fichero_Paciente);
-	void registrar();
+	void registrarPaciete(FILE* fichero_Paciente);
 	void eliminar();
 	void consultar();
 	void caratula();
@@ -29,17 +34,20 @@ public:
 
 
 struct Paciente {
-	char nombre[50];
+	float codigo_Paciente;
 	char dpi[13];
+	char nombre[25];
+	char apellido[25];
 	char sexo[13];
-	int edad;
-	char direccion[25];
-	bool seguro_medico;
-}registro;
-
+	int  edad;
+	char seguro_medico[50];
+	char estado_Clinico[50];
+	char direccion[50];
+}registroPa;
 
 int salida = 0;
-FILE* fichero_Paciente;
+FILE *fichero_Paciente;
+int i;
 
 //Agregue funcion para generar un archivo de paciente
 void Proyecto::crearFichero(FILE* fichero_Paciente) {
@@ -62,11 +70,49 @@ void Proyecto::menu() {
 	cout << amarillo << "4 - Salir \n";
 }
 
-void Proyecto::registrar() {
+void Proyecto::registrarPaciete(FILE *fichero_Paciente) {
 	system("cls");
-	cout << verde << ("NUEVO REGISTRO DE PACIENTE \n") << blanco;
-	cout << "Ingrese Nombre del paciente: ";
-
+	fichero_Paciente = fopen("Paciente.txt", "a+");
+	if(fichero_Paciente == NULL){
+		printf("\nFichero no existe! \nPor favor 	creelo"); 
+  		return; 
+	}
+	cout<<("\nREGISTRO DE PACIENTE! \n");
+	printf("******************************\n");
+	printf("Codigo de Paciente: ");
+	cin>>registroPa.codigo_Paciente;
+	printf("NO. DPI: ");
+	cin>>registroPa.dpi;
+	printf("NOMBRE: ");
+	cin>>registroPa.nombre;
+	printf("APELLIDO: ");
+	cin>>registroPa.apellido;
+	printf("SEXO: ");
+	cin>>registroPa.sexo;
+	printf("EDAD: ");
+	cin>>registroPa.edad;
+	cout<<("SEGURO MEDICO: ");
+	cin>>registroPa.seguro_medico;
+	printf("ESTADO CLINICO: ");
+	cin>>registroPa.estado_Clinico;
+	printf("DIRECCION: ");
+	//
+	fflush(stdin);
+	scanf("%[^\n]25s",registroPa.direccion);
+	
+	ofstream fpaciente("Paciente.txt", ios::out | ios::app);
+	fpaciente<<"\n";
+	fpaciente<<registroPa.codigo_Paciente<<"  ";
+	fpaciente<<registroPa.dpi<<"   ";
+	fpaciente<<registroPa.nombre<<"   ";
+	fpaciente<<registroPa.apellido<<"   " ;
+	fpaciente<<registroPa.sexo<<"   ";
+	fpaciente<<registroPa.edad<<"   ";
+	fpaciente<<registroPa.seguro_medico<<"  ";
+	fpaciente<<registroPa.estado_Clinico<<"  ";
+	fpaciente<<registroPa.direccion<<"  ";
+	fpaciente<<"\n";
+	fpaciente.close();
 }
 void Proyecto::caratula() {
 	system("cls");
@@ -106,7 +152,7 @@ int main() {
 		switch (opcion) {
 		case 1: p.crearFichero(fichero_Paciente);
 			break;
-		case 2: p.registrar();
+		case 2: p.registrarPaciete(fichero_Paciente);
 			break;
 		case 3: p.caratula();
 			break;
