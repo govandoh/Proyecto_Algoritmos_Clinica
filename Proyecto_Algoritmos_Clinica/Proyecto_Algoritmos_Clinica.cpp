@@ -7,6 +7,7 @@
 #include <string>
 #include <stdio.h>
 #include <cstring>    
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -17,9 +18,12 @@ public:
 	void crearFichero(FILE* fichero_Paciente);
 	void registrarPaciete(FILE* fichero_Paciente);
 	void eliminar();
-	void consultar();
+	void consultarTodos();
+	void generarVisita();
+	void consultaVisita();
 	void caratula();
 	void menu();
+	void enca();
 	//Colores para pintar letras de consola
 	string negro = "\u001B[30m";
 	string rojo = "\u001B[31m";
@@ -35,7 +39,7 @@ public:
 
 struct Paciente {
 	float codigo_Paciente;
-	char dpi[13];
+	char dpi[14];
 	char nombre[25];
 	char apellido[25];
 	char sexo[13];
@@ -44,6 +48,15 @@ struct Paciente {
 	char estado_Clinico[50];
 	char direccion[50];
 }registroPa;
+
+struct Consulta{
+	int id;
+	char fecha[10];
+	char nombre[15];
+	char tipo[10];
+	int habitacion;
+	int cama;
+}visitaReg;
 
 int salida = 0;
 FILE *fichero_Paciente;
@@ -62,12 +75,107 @@ void Proyecto::crearFichero(FILE* fichero_Paciente) {
 	fclose(fichero_Paciente);
 }
 
+
+//28/10/21 - 12:00 :  Agregue funcion para buscar a todos los pacientes o solo a uno
+
+void Proyecto::consultarTodos(){
+	system("cls");
+	string linea;
+	ifstream fichero("Paciente.txt");
+	
+	Proyecto p = Proyecto();
+	
+	p.enca();
+	int contador = 1;
+	while(getline(fichero,linea)){
+		cout<<contador<<")  "<<linea << "\n";
+		contador++;
+	}
+	
+	cout<<salto<<salto;
+	getchar();
+}
+
+
+
+void Proyecto::generarVisita(){
+	system("cls");
+	
+	
+	// Leemos el archivo del contador para generar el ID
+	ifstream contador("contador.txt");
+	int id = 0;
+	contador>>id;
+	contador.close();
+	remove("contador.txt");
+	//Incrementamos para volver a guardar
+	id++;
+	ofstream nuevoContador("contador.txt", ios::out | ios::app);
+	nuevoContador<<id;
+	nuevoContador.close();
+	
+	//Creamos el archivo para la consulta
+	string nombre = "consultas//Consulta"+ std::to_string(id) + ".txt";
+	ofstream consulta(nombre, ios::out | ios::app);
+		
+	cout<<"Su Numero de visita es "<<id<<endl;
+	cout<<"Ingrese la fecha de visita: ";
+	cin>>visitaReg.fecha; cout<<"---------------------------------- \n";
+	cout<<"Ingrese el nombre del paciente: ";
+	fflush(stdin);
+	scanf("%[^\n]15s",visitaReg.nombre); cout<<"---------------------------------- \n";//scanf("%[^\n]15s",visitaReg.nombre); cout<<"---------------------------------- \n";
+	cout<<"Ingrese tipo de consulta: ";
+	cin>>visitaReg.tipo; cout<<"---------------------------------- \n"; //scanf("%[^\n]10s", visitaReg.tipo); cout<<"---------------------------------- \n";
+	cout<<"Ingrese habitacion asignada: ";
+	cin>>visitaReg.habitacion; cout<<"---------------------------------- \n";
+	cout<<"Ingrese cama asignada: ";
+	cin>>visitaReg.cama; cout<<"---------------------------------- \n";
+	cout<<"\nSe genero su visita correctamente ";
+	
+	
+	
+	consulta<<id << " - " << visitaReg.fecha << " - " << visitaReg.nombre << " - " << visitaReg.tipo << " - " << visitaReg.habitacion << " - " <<visitaReg.cama;
+	consulta.close();
+
+}
+
+void Proyecto::consultaVisita(){
+	system("cls");
+	
+	string visitaNo, datoRecuperado;
+	
+	cout<<"Ingrese el numero de visita: ";
+	cin>>visitaNo;
+	
+	ifstream visita("consultas//Consulta"+visitaNo + ".txt");
+
+	cout<< " \n\n----- Resultados de la visita numero " <<visitaNo << "  ----- \n\n";
+	
+	cout<<"\nID - Fecha -   Paciente   -  Tipo Cita  - Habitacion  -  Cama\n";
+	
+	
+		
+	while(getline(visita,datoRecuperado)){
+		cout<< datoRecuperado;
+	}
+	
+	cout<<salto<<salto;
+}
+
+void Proyecto::enca() { 
+	printf("********************************************\n");
+	printf("No.Cama: 	   No.DPI:		 Nombre:       Apellido:	  Genero:      Edad:	 Seguro Medico:     Estado Clinico:	    Dirección\n"); 
+} 
+
+
 void Proyecto::menu() {
 	cout << amarillo << "\n------- MENU PRINCIPAL --------";
 	cout << amarillo << "\n1 - Crear un Fichero de Pacientes \n";
 	cout << amarillo << "2 - Insert un Paciente nuevo \n";
-	cout << amarillo << "3 - Ver Historial de Paciente \n";
-	cout << amarillo << "4 - Salir \n";
+	cout << amarillo << "3 - Ver Pasientes \n";
+	cout << amarillo << "4 - Generar Visita\n";
+	cout << amarillo << "5 - Ver Visita \n";
+	cout << amarillo << "6 - Salir \n";
 }
 
 void Proyecto::registrarPaciete(FILE *fichero_Paciente) {
@@ -80,27 +188,21 @@ void Proyecto::registrarPaciete(FILE *fichero_Paciente) {
 	cout<<("\nREGISTRO DE PACIENTE! \n");
 	printf("******************************\n");
 	printf("Codigo de Paciente: ");
-	cin>>registroPa.codigo_Paciente;
-	fflush(stdin);
+	cin>>registroPa.codigo_Paciente; cout<<"---------------------------------- \n";
 	printf("NO. DPI: ");
-	scanf("%[^\n]25s", registroPa.dpi);
-	cin.ignore();
+	cin>>registroPa.dpi; cout<<"---------------------------------- \n";
 	printf("NOMBRE: ");
-	fflush(stdin);
-	scanf("%[^\n]25s", registroPa.nombre);
+	cin>>registroPa.nombre; cout<<"---------------------------------- \n";
 	printf("APELLIDO: ");
-	cin>>registroPa.apellido;
+	cin>>registroPa.apellido;cout<<"---------------------------------- \n";
 	printf("SEXO: ");
-	fflush(stdin);
-	cin>>registroPa.sexo;
+	cin>>registroPa.sexo;cout<<"---------------------------------- \n";
 	printf("EDAD: ");
-	fflush(stdin);
-	cin>>registroPa.edad;
-	fflush(stdin);
+	cin>>registroPa.edad;cout<<"---------------------------------- \n";
 	cout<<("SEGURO MEDICO: ");
-	cin>>registroPa.seguro_medico;
+	cin>>registroPa.seguro_medico;cout<<"---------------------------------- \n";
 	printf("ESTADO CLINICO: ");
-	cin>>registroPa.estado_Clinico;
+	cin>>registroPa.estado_Clinico;cout<<"---------------------------------- \n";
 	printf("DIRECCION: ");
 	//
 	fflush(stdin);
@@ -108,24 +210,15 @@ void Proyecto::registrarPaciete(FILE *fichero_Paciente) {
 	
 	ofstream fpaciente("Paciente.txt", ios::out | ios::app);
 	fpaciente<<"\n";
-	fpaciente<<registroPa.codigo_Paciente;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.dpi;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.nombre;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.apellido;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.sexo;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.edad;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.seguro_medico;
-	fpaciente<<" - ";
-	fpaciente<<registroPa.estado_Clinico;
-	fpaciente<<" - ";
+	fpaciente<<registroPa.codigo_Paciente<<"  ";
+	fpaciente<<registroPa.dpi<<"   ";
+	fpaciente<<registroPa.nombre<<"   ";
+	fpaciente<<registroPa.apellido<<"   " ;
+	fpaciente<<registroPa.sexo<<"   ";
+	fpaciente<<registroPa.edad<<"   ";
+	fpaciente<<registroPa.seguro_medico<<"  ";
+	fpaciente<<registroPa.estado_Clinico<<"  ";
 	fpaciente<<registroPa.direccion<<"  ";
-	fpaciente<<" - ";
 	fpaciente<<"\n";
 	fpaciente.close();
 }
@@ -165,16 +258,20 @@ int main() {
 		p.menu();
 		printf("Opcion: ");
 		scanf("%d", &opcion);
+		system("cls");
 		switch (opcion) {
 		case 1: p.crearFichero(fichero_Paciente);
 			break;
 		case 2: p.registrarPaciete(fichero_Paciente);
 			break;
-		case 3: p.caratula();
+		case 3: p.consultarTodos();
 			break;
-		case 4: salida = 1;
+		case 4: char d; p.generarVisita();
+			break;
+		case 5: p.consultaVisita();
+			break;
+		case 6: salida = 1;
 			exit(1);
-			break;
 		default: printf("\n Opcion no valida");
 		}
 	}
