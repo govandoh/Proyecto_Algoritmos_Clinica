@@ -81,16 +81,22 @@ void Proyecto::registrarPaciete(FILE *fichero_Paciente) {
 	printf("******************************\n");
 	printf("Codigo de Paciente: ");
 	cin>>registroPa.codigo_Paciente;
+	fflush(stdin);
 	printf("NO. DPI: ");
-	cin>>registroPa.dpi;
+	scanf("%[^\n]25s", registroPa.dpi);
+	cin.ignore();
 	printf("NOMBRE: ");
-	cin>>registroPa.nombre;
+	fflush(stdin);
+	scanf("%[^\n]25s", registroPa.nombre);
 	printf("APELLIDO: ");
 	cin>>registroPa.apellido;
 	printf("SEXO: ");
+	fflush(stdin);
 	cin>>registroPa.sexo;
 	printf("EDAD: ");
+	fflush(stdin);
 	cin>>registroPa.edad;
+	fflush(stdin);
 	cout<<("SEGURO MEDICO: ");
 	cin>>registroPa.seguro_medico;
 	printf("ESTADO CLINICO: ");
@@ -102,15 +108,24 @@ void Proyecto::registrarPaciete(FILE *fichero_Paciente) {
 	
 	ofstream fpaciente("Paciente.txt", ios::out | ios::app);
 	fpaciente<<"\n";
-	fpaciente<<registroPa.codigo_Paciente<<"  ";
-	fpaciente<<registroPa.dpi<<"   ";
-	fpaciente<<registroPa.nombre<<"   ";
-	fpaciente<<registroPa.apellido<<"   " ;
-	fpaciente<<registroPa.sexo<<"   ";
-	fpaciente<<registroPa.edad<<"   ";
-	fpaciente<<registroPa.seguro_medico<<"  ";
-	fpaciente<<registroPa.estado_Clinico<<"  ";
+	fpaciente<<registroPa.codigo_Paciente;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.dpi;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.nombre;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.apellido;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.sexo;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.edad;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.seguro_medico;
+	fpaciente<<" - ";
+	fpaciente<<registroPa.estado_Clinico;
+	fpaciente<<" - ";
 	fpaciente<<registroPa.direccion<<"  ";
+	fpaciente<<" - ";
 	fpaciente<<"\n";
 	fpaciente.close();
 }
@@ -138,6 +153,7 @@ void Proyecto::caratula() {
 	cout << salto << salto;
 	cout << blanco << "-------[Precione cualquier tecla para continuar]-------";
 	getchar();
+	system("cls");
 }
 
 
